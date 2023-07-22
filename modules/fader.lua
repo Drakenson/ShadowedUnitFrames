@@ -139,24 +139,42 @@ function Fader:CastStop(frame, event, unit, id)
 end
 
 
+function ShowPlayerPortrait(frame)
+	if ((frame.unitType == "player" or frame.unitType == "pet") and not(frame.portrait == nil)) then
+		frame.portrait:Show()
+	end
+end
+
+function HidePlayerPortrait(frame)
+	if ((frame.unitType == "player" or frame.unitType == "pet") and not(frame.portrait == nil)) then
+		frame.portrait:Hide()
+	end
+end
+
 function Fader:Update(frame, event)
 	-- In combat, fade back in
 	if( InCombatLockdown() or event == "PLAYER_REGEN_DISABLED" ) then
+		ShowPlayerPortrait(frame)
 		startFading(frame, "in", ShadowUF.db.profile.units[frame.unitType].fader.combatAlpha)
 	-- Player is casting, fade in
 	elseif( frame.fader.playerCasting ) then
+		ShowPlayerPortrait(frame)
 		startFading(frame, "in", ShadowUF.db.profile.units[frame.unitType].fader.combatAlpha, true)
 	-- Ether mana or energy is not at 100%, fade in
 	elseif( powerDepletes[UnitPowerType(frame.unit)] and UnitPower(frame.unit) ~= UnitPowerMax(frame.unit) ) then
+		ShowPlayerPortrait(frame)
 		startFading(frame, "in", ShadowUF.db.profile.units[frame.unitType].fader.combatAlpha)
 	-- Health is not at max, fade in
 	elseif( UnitHealth(frame.unit) ~= UnitHealthMax(frame.unit) ) then
+		ShowPlayerPortrait(frame)
 		startFading(frame, "in", ShadowUF.db.profile.units[frame.unitType].fader.combatAlpha)
 	-- Targetting somebody, fade in
 	elseif( frame.unitType == "player" and UnitExists("target") ) then
+		ShowPlayerPortrait(frame)
 		startFading(frame, "in", ShadowUF.db.profile.units[frame.unitType].fader.combatAlpha)
 	-- Nothing else? Fade out!
 	else
+		HidePlayerPortrait(frame)
 		startFading(frame, "out", ShadowUF.db.profile.units[frame.unitType].fader.inactiveAlpha)
 	end
 end
